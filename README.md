@@ -9,7 +9,13 @@
 - 군지원 접수현황
 - 구비서류 목록
 - 선발 배점기준
-- 조건 기반 추천 로직 초안
+- 특기 전체 검색
+- 조건 기반 추천 결과
+
+## 현재 진행 상태
+
+- 완료 단계: 0단계 ~ 6단계
+- 다음 단계: 7단계 구비서류 체크리스트
 
 ## 개발 시작
 
@@ -32,10 +38,12 @@ curl "http://localhost:4000/api/mma/specialties?pageNo=1&numOfRows=1"
 서비스 API:
 
 - `GET /api/specialties?pageNo=1&numOfRows=20`
+- `GET /api/specialties/search?q=신호정보`
 - `GET /api/specialties/:code`
 - `GET /api/specialties/:code/documents`
 - `GET /api/specialties/:code/scores`
 - `GET /api/recruitment/status?pageNo=1&numOfRows=20`
+- `POST /api/recommendations`
 
 ## 문서
 
@@ -48,7 +56,7 @@ curl "http://localhost:4000/api/mma/specialties?pageNo=1&numOfRows=1"
 
 ## 다음 작업
 
-1. 조건 입력 화면 구현
-2. 사용자 조건 기반 추천 로직 구현
-3. 구비서류 체크리스트 저장 기능 구현
-4. Prisma 스키마 확정 후 캐시 DB 연동
+1. 구비서류 체크리스트 저장 기능 구현
+2. 특기별 임무 설명 데이터 확보 방식 결정
+3. Prisma 스키마 확정 후 캐시 DB 연동
+4. API 에러/로딩/빈 상태 UX 보강
