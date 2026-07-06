@@ -101,6 +101,8 @@ export type RecommendationInput = {
   certificates: string[];
   physicalGrade?: number;
   interests: string[];
+  desiredEnlistDate?: string;
+  serviceType?: "any" | "active" | "social";
 };
 
 export type RecommendationResult = {

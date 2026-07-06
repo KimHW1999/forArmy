@@ -14,6 +14,7 @@ import { scanBySpecialtyCode } from "../mma/mma-scanner";
 import { mapRecruitmentStatus } from "../recruitment/recruitment.mapper";
 import { mapSelectionScoreRule } from "../scores/score.mapper";
 import { mapMilitarySpecialty } from "./specialty.mapper";
+import { searchSpecialties } from "./specialty-search";
 
 const mmaClient = new MmaClient();
 
@@ -28,6 +29,23 @@ specialtyRouter.get("/", async (req, res, next) => {
     });
 
     res.json(toPage(page, page.items.map(mapMilitarySpecialty)));
+  } catch (error) {
+    next(error);
+  }
+});
+
+specialtyRouter.get("/search", async (req, res, next) => {
+  try {
+    const items = await searchSpecialties(mmaClient, {
+      query: readString(req.query.q),
+      maxPages: readPositiveNumber(req.query.maxPages, 12),
+      limit: readPositiveNumber(req.query.limit, 80)
+    });
+
+    res.json({
+      items,
+      totalCount: items.length
+    });
   } catch (error) {
     next(error);
   }
@@ -104,6 +122,11 @@ async function findSpecialty(
   });
 
   return matches[0] ? mapMilitarySpecialty(matches[0]) : undefined;
+}
+
+function readString(value: unknown): string {
+  const raw = Array.isArray(value) ? value[0] : value;
+  return typeof raw === "string" ? raw : "";
 }
 
 async function findDocuments(

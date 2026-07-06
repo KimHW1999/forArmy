@@ -18,7 +18,12 @@
 - `recruit_round`: `mojipTms`
 - `application_start_at`: `jeopsuSjdtm`
 - `application_end_at`: `jeopsuJrdtm`
+- `duty_summary`: 별도 확보한 임무 요약
+- `duty_source_url`: 임무 설명 출처 URL
+- `duty_source_type`: 공식자료/GPT초안/수기입력 등 출처 유형
 - `source_updated_at`
+
+현재 연동한 병무청 OpenAPI에는 특기별 실제 임무 설명 본문이 없다. 임무 설명은 공식 모집안내 페이지, 병무청 공지, 수기 정리 자료 등을 별도 데이터로 붙이고, GPT를 사용할 경우 초안 생성 용도로만 두고 출처와 검수 상태를 함께 저장한다.
 
 ### `specialty_eligibilities`
 

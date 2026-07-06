@@ -42,3 +42,19 @@
 
 - 원천: 군지원 접수현황 API
 - 응답: `MmaApiPage<RecruitmentStatus>`
+
+## 특기 검색
+
+`GET /api/specialties/search?q=신호정보&maxPages=12&limit=100`
+
+- 원천: 군사특기 마스터
+- 병무청 API가 검색 파라미터를 제공하지 않으므로 서버가 여러 페이지를 스캔한 뒤 특기코드 기준으로 중복을 줄인다.
+- 응답: `{ items: MilitarySpecialty[], totalCount: number }`
+
+## 추천
+
+`POST /api/recommendations`
+
+- 원천: 특기 검색 결과
+- 입력: `RecommendationInput`
+- 응답: `{ items: RecommendationResult[], totalCount: number }`

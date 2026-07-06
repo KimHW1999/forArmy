@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import { assertEnv, env } from "./config/env";
 import { mmaRouter } from "./modules/mma/mma.routes";
+import { recommendationRouter } from "./modules/recommendations/recommendation.routes";
 import { recruitmentRouter } from "./modules/recruitment/recruitment.routes";
 import { specialtyRouter } from "./modules/specialties/specialty.routes";
 
@@ -22,6 +23,7 @@ app.get("/api/health", (_req, res) => {
 app.use("/api/mma", mmaRouter);
 app.use("/api/specialties", specialtyRouter);
 app.use("/api/recruitment", recruitmentRouter);
+app.use("/api/recommendations", recommendationRouter);
 
 app.use(
   (
