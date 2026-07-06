@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model MilitarySpecialty {
+  id                  Int      @id @default(autoincrement())
+  specialtyCode       String   @map("specialty_code")
+  specialtyName       String?  @map("specialty_name")
+  branchCode          String   @map("branch_code")
+  branchName          String?  @map("branch_name")
+  categoryCode        String?  @map("category_code")
+  categoryName        String?  @map("category_name")
+  requirementItemName String?  @map("requirement_item_name")
+  minValue            String?  @map("min_value")
+  maxValue            String?  @map("max_value")
+  recruitYear         String   @map("recruit_year")
+  recruitRound        String   @map("recruit_round")
+  scheduleId          String   @map("schedule_id")
+  sourceUpdatedAt     DateTime @default(now()) @map("source_updated_at")
+
+  @@index([specialtyCode])
+  @@map("military_specialties")
+}
+
+model RequiredDocument {
+  id             Int     @id @default(autoincrement())
+  specialtyCode  String  @map("specialty_code")
+  specialtyName  String? @map("specialty_name")
+  branchCode     String  @map("branch_code")
+  branchName     String? @map("branch_name")
+  categoryCode   String? @map("category_code")
+  categoryName   String? @map("category_name")
+  documentCode   String  @map("document_code")
+  documentName   String? @map("document_name")
+  isRequired     Boolean @map("is_required")
+
+  @@index([specialtyCode])
+  @@map("required_documents")
+}
+
+model SelectionScoreRule {
+  id              Int     @id @default(autoincrement())
+  specialtyCode   String  @map("specialty_code")
+  specialtyName   String? @map("specialty_name")
+  branchCode      String  @map("branch_code")
+  branchName      String? @map("branch_name")
+  scoreGroupCode  String  @map("score_group_code")
+  scoreGroupName  String? @map("score_group_name")
+  scoreGradeCode  String? @map("score_grade_code")
+  scoreGradeName  String? @map("score_grade_name")
+  scoreDetailCode String  @map("score_detail_code")
+  scoreDetailName String? @map("score_detail_name")
+  minValue        String? @map("min_value")
+  maxValue        String? @map("max_value")
+  directScore     Float?  @map("direct_score")
+  indirectScore   Float?  @map("indirect_score")
+  scheduleId      String  @map("schedule_id")
+  recruitYear     String  @map("recruit_year")
+  recruitRound    String  @map("recruit_round")
+
+  @@index([specialtyCode])
+  @@map("selection_score_rules")
+}
