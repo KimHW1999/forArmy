@@ -163,6 +163,33 @@ export async function readCachedScores(
   return items;
 }
 
+export async function readCachedScoresForSpecialties(
+  specialtyCodes: string[]
+): Promise<Map<string, SelectionScoreRule[]> | null> {
+  if (!hasCacheFile("scores.csv")) {
+    return null;
+  }
+
+  const codeSet = new Set(specialtyCodes.filter(Boolean));
+
+  if (!codeSet.size) {
+    return new Map();
+  }
+
+  const rows = await readCsvFiltered("scores.csv", (row) => {
+    return Boolean(row.specialtyCode && codeSet.has(row.specialtyCode));
+  });
+  const byCode = new Map<string, SelectionScoreRule[]>();
+
+  for (const item of rows.map(toSelectionScoreRule)) {
+    const list = byCode.get(item.specialtyCode) ?? [];
+    list.push(item);
+    byCode.set(item.specialtyCode, list);
+  }
+
+  return byCode;
+}
+
 export async function readCachedRecruitmentStatuses(
   specialtyCode: string
 ): Promise<RecruitmentStatus[] | null> {

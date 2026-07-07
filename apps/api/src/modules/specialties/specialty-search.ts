@@ -20,7 +20,7 @@ export async function searchSpecialties(
   const limit = options.limit ?? 80;
   const cached = await readCachedSpecialties({ query, limit });
 
-  if (cached?.length) {
+  if (cached) {
     return cached;
   }
 
