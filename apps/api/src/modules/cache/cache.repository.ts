@@ -1,5 +1,7 @@
+import { createReadStream, existsSync } from "node:fs";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { createInterface } from "node:readline";
 import type {
   MilitarySpecialty,
   RecruitmentStatus,
@@ -133,41 +135,47 @@ export async function readCachedSpecialty(
 export async function readCachedDocuments(
   specialtyCode: string
 ): Promise<RequiredDocument[] | null> {
-  return readFreshCollection("documents", specialtyCode, STATIC_CACHE_TTL_MS, async () => {
-    const rows = await readCsv("documents.csv");
-    return rows.filter((row) => row.specialtyCode === specialtyCode).map(toRequiredDocument);
-  });
+  if (!hasCacheFile("documents.csv")) {
+    return null;
+  }
+
+  const rows = await readCsv("documents.csv");
+  const items = rows
+    .filter((row) => row.specialtyCode === specialtyCode)
+    .map(toRequiredDocument);
+
+  return items;
 }
 
 export async function readCachedScores(
   specialtyCode: string,
   scheduleId?: string
 ): Promise<SelectionScoreRule[] | null> {
-  return readFreshCollection("scores", specialtyCode, STATIC_CACHE_TTL_MS, async () => {
-    const rows = await readCsv("scores.csv");
-    return rows
-      .filter((row) => {
-        return (
-          row.specialtyCode === specialtyCode &&
-          (!scheduleId || row.scheduleId === scheduleId)
-        );
-      })
-      .map(toSelectionScoreRule);
+  if (!hasCacheFile("scores.csv")) {
+    return null;
+  }
+
+  const rows = await readCsvFiltered("scores.csv", (row) => {
+    return row.specialtyCode === specialtyCode && (!scheduleId || row.scheduleId === scheduleId);
   });
+  const items = rows.map(toSelectionScoreRule);
+
+  return items;
 }
 
 export async function readCachedRecruitmentStatuses(
   specialtyCode: string
 ): Promise<RecruitmentStatus[] | null> {
-  return readFreshCollection(
-    "recruitmentStatus",
-    specialtyCode,
-    RECRUITMENT_CACHE_TTL_MS,
-    async () => {
-      const rows = await readCsv("recruitment-statuses.csv");
-      return rows.filter((row) => row.specialtyCode === specialtyCode).map(toRecruitmentStatus);
-    }
-  );
+  if (!hasCacheFile("recruitment-statuses.csv")) {
+    return null;
+  }
+
+  const rows = await readCsv("recruitment-statuses.csv");
+  const items = rows
+    .filter((row) => row.specialtyCode === specialtyCode)
+    .map(toRecruitmentStatus);
+
+  return items;
 }
 
 export async function cacheSpecialties(items: MilitarySpecialty[]) {
@@ -265,7 +273,6 @@ export async function warmCsvCache() {
   await Promise.all([
     readCsv("specialties.csv"),
     readCsv("documents.csv"),
-    readCsv("scores.csv"),
     readCsv("recruitment-statuses.csv"),
     readCsv("cache-refresh.csv")
   ]);
@@ -361,6 +368,53 @@ async function readCsv(fileName: string): Promise<CsvRecord[]> {
   }
 }
 
+async function readCsvFiltered(
+  fileName: string,
+  predicate: (row: CsvRecord) => boolean
+): Promise<CsvRecord[]> {
+  const cachePath = resolveCachePath(fileName);
+
+  try {
+    await stat(cachePath);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return [];
+    }
+
+    throw error;
+  }
+
+  const stream = createReadStream(cachePath, { encoding: "utf8" });
+  const lines = createInterface({
+    input: stream,
+    crlfDelay: Infinity
+  });
+  const records: CsvRecord[] = [];
+  let headers: string[] | null = null;
+
+  for await (const line of lines) {
+    if (!headers) {
+      headers = parseCsvLine(line);
+      continue;
+    }
+
+    if (!line.trim()) {
+      continue;
+    }
+
+    const values = parseCsvLine(line);
+    const record = Object.fromEntries(
+      headers.map((header, index) => [header, values[index] ?? ""])
+    );
+
+    if (predicate(record)) {
+      records.push(record);
+    }
+  }
+
+  return records;
+}
+
 async function writeCsv(
   fileName: string,
   headers: readonly string[],
@@ -425,6 +479,11 @@ function parseCsv(content: string): string[][] {
   }
 
   return rows;
+}
+
+function parseCsvLine(line: string): string[] {
+  const row = parseCsv(`${line}\n`)[0];
+  return row ?? [];
 }
 
 function escapeCsvCell(value: unknown) {
@@ -596,6 +655,10 @@ function getCacheDir() {
 
 function resolveCachePath(fileName: string) {
   return resolve(getCacheDir(), fileName);
+}
+
+function hasCacheFile(fileName: string) {
+  return existsSync(resolveCachePath(fileName));
 }
 
 function getProjectRoot() {

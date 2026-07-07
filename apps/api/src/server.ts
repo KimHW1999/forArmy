@@ -3,7 +3,6 @@ import { resolve } from "node:path";
 import cors from "cors";
 import express from "express";
 import { env } from "./config/env";
-import { warmCsvCache } from "./modules/cache/cache.repository";
 import { mmaRouter } from "./modules/mma/mma.routes";
 import { recommendationRouter } from "./modules/recommendations/recommendation.routes";
 import { recruitmentRouter } from "./modules/recruitment/recruitment.routes";
@@ -76,12 +75,3 @@ app.use(
 app.listen(env.port, env.host, () => {
   console.log(`API server listening on http://${env.host}:${env.port}`);
 });
-
-warmCsvCache()
-  .then(() => {
-    console.log("CSV cache warmed");
-  })
-  .catch((error: unknown) => {
-    const message = error instanceof Error ? error.message : "Unknown CSV cache warm error";
-    console.warn(`CSV cache warm skipped: ${message}`);
-  });
