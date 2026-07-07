@@ -12,6 +12,7 @@ for (const path of envFiles) {
 
 export const env = {
   port: Number(process.env.PORT ?? process.env.API_PORT ?? 4000),
+  host: process.env.HOST ?? "0.0.0.0",
   mmaServiceKey: process.env.MMA_SERVICE_KEY ?? "",
   openaiApiKey: process.env.OPENAI_API_KEY ?? "",
   openaiModel: process.env.OPENAI_MODEL ?? "gpt-5.2"
