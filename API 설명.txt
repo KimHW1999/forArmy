@@ -1,0 +1,414 @@
+XML 병무청_모집병 구비서류
+
+모집병 지원 시 구비서류 목록을 확인할 수 있는 서비스입니다. 군별(육군, 해군, 공군, 해병대), 모집분야별(기술행정병, 일반/전문기술병 등), 모집특기별로 정보가 구분되어 있습니다. 예) 기술행정병 00특기 제출서류: 자격면허증 사본, 생활기록부 사본, 군사특기 관련 경력증명서, 국가유공자증명서, 헌혈 및 사회봉사활동 증명서 등
+응시지방병무청에서 필요 시 지원자에게 제출해야 하는 서류, 제출 방법, 제출 기한 등을 개별 안내하며, 병무청 누리집- 군지원(입영신청)안내- 지원서 작성/수정/취소- 서류제출 메뉴에서 파일 등록할 수 있습니다.
+
+요청변수(Request Parameter)
+
+항목명(국문)	항목명(영문)	항목크기	항목구분	샘플데이터	항목설명
+한 페이지 결과 수	numOfRows	4	1	10	한 페이지 결과 수
+페이지 번호	pageNo	4	1	1	페이지 번호
+출력결과(Response Element)
+
+항목명(국문)	항목명(영문)	항목크기	항목구분	샘플데이터	항목설명
+결과코드	resultCode	2	1		결과코드
+결과메세지	resultMsg	50	1		결과메세지
+한 페이지 결과 수	numOfRows	4	1	10	한 페이지 결과 수
+페이지 번호	pageNo	4	1	1	페이지 번호
+전체 결과 수	totalCount	4	1	3	전체 결과 수
+목록	items		0..n		목록
+군사특기코드	gsteukgiCd	10	1	000333	
+군사특기명	gsteukgiNm	100	0	특공병	
+군구분코드	gunGbcd	1	1	1	
+군구분명	gunGbnm	150	0	육군	
+제출서류코드	jcseoryuCd	2	1	08	
+제출서류명	jcseoryuNm	150	0	고교생활기록부 사본	
+모집병과특기코드	mjbgteukgiCd	2	0	11	
+모집병과특기명	mjbgteukgiNm	150	0	보병	
+필수제출여부	psjechulYn	1	0	Y	
+Row number	rnum			17	
+샘플코드
+Java Javascript C# PHP Curl Objective-C Python Nodejs R
+/* Javascript 샘플 코드 */
+
+
+var xhr = new XMLHttpRequest();
+var url = 'http://apis.data.go.kr/1300000/gbSeoryu/list/gbSeoryu/list'; /*URL*/
+var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'서비스키'; /*Service Key*/
+queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /**/
+queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /**/
+xhr.open('GET', url + queryParams);
+xhr.onreadystatechange = function () {
+    if (this.readyState == 4) {
+        alert('Status: '+this.status+'nHeaders: '+JSON.stringify(this.getAllResponseHeaders())+'nBody: '+this.responseText);
+    }
+};
+
+xhr.send('');
+
+
+XML 병무청_모집병 선발배점기준
+
+모집병 지원 시 선발배점 기준을 확인할 수 있는 서비스입니다.
+군별(육군, 해군, 공군, 해병대), 모집특기별로 정보가 구분되어 있습니다.
+자격면허는 자격등급(기사급이상, 산업기사급, 기능사급, 일반 등) 및 특기 관련성(직접관련, 간접관련)에 따라 배점을 구분하고, 전공은 학제(2년제, 3년제, 4년제이상 등), 학년(1~4학년이상), 재학/수료여부에 따라 배점을 구분하고, 출결은 결석일수에 따라 배점을 구분합니다.
+병무청 누리집- 병무민원- 군지원- 내점수 미리 알아보기 메뉴에서 자격면허 및 전공학력을 입력하여 예상 점수를 확인할 수 있습니다.
+
+
+ 활용신청
+요청변수(Request Parameter)
+
+항목명(국문)	항목명(영문)	항목크기	항목구분	샘플데이터	항목설명
+한 페이지 결과 수	numOfRows	4	1	10	한 페이지 결과 수
+페이지 번호	pageNo	4	1	1	페이지 번호
+출력결과(Response Element)
+
+항목명(국문)	항목명(영문)	항목크기	항목구분	샘플데이터	항목설명
+전체 결과 수	totalCount	4	1	3	전체 결과 수
+목록	items		0..n		목록
+배점기준등급코드	bjgijunDgcd	2	0	01	
+배점기준등급명	bjgijunDgnm	150	0	6개월	
+배점기준구분코드	bjgijunGbcd	1	1	7	
+배점기준구분명	bjgijunGbnm	150	0	01	
+배점기준상세코드	bjgjsangseCd	3	1	01	
+배점기준상세명	bjgjsangseNm	150	0	0일	
+최고기준값	cggijunVl	10	0	0	
+최저기준값	cjgijunVl	10	0	0	
+간접관련점수	gjgwanryeonScor	9	0	0	
+군사특기코드	gsteukgiCd	10	1	D111101	
+군사특기명	gsteukgiNm	100	0	최전방수호병	
+군구분코드	gunGbcd	1	1	1	
+군구분명	gunGbnm	150	0	육군	
+입영예정종료년월	iyyjjongryoYm	6	0	201604	
+입영예정시작년월	iyyjsijakYm	6	0	201604	
+접수종료일시	jeopsuJrdtm	20	0	3/2/16 14:00	
+접수시작일시	jeopsuSjdtm	20	0	2/25/16 14:00	
+직접관련점수	jjgwanryeonScor	9	0	30	
+모병특기번호	mbteukgiNo	5	1	11042	
+모집병과특기코드	mjbgteukgiCd	2	0	11	
+모집병과특기명	mjbgteukgiNm	150	0	보병	
+모집일정번호	mjiljeongNo	5	1	21455	
+모집지원계급코드	mjjwgyegeupCd	3	1	001	
+모집지원계급명	mjjwgyegeupNm	150	0	병	
+모집회차	mojipTms	3	1	2	
+모집년도	mojipYy	4	1	2016	
+Row number	rnum	1	1	1	
+결과코드	resultCode	2	1		결과코드
+결과메세지	resultMsg	50	1		결과메세지
+한 페이지 결과 수	numOfRows	4	1	10	한 페이지 결과 수
+페이지 번호	pageNo	4	1	1	페이지 번호
+샘플코드
+Java Javascript C# PHP Curl Objective-C Python Nodejs R
+/* Javascript 샘플 코드 */
+
+
+var xhr = new XMLHttpRequest();
+var url = 'http://apis.data.go.kr/1300000//bjGiJun/list/bjGiJun/list'; /*URL*/
+var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'서비스키'; /*Service Key*/
+queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /**/
+queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /**/
+xhr.open('GET', url + queryParams);
+xhr.onreadystatechange = function () {
+    if (this.readyState == 4) {
+        alert('Status: '+this.status+'nHeaders: '+JSON.stringify(this.getAllResponseHeaders())+'nBody: '+this.responseText);
+    }
+};
+
+xhr.send('');
+
+
+XML 병무청 모집병 군별 특기별 지원가능 정보
+
+모집병 지원 시 군별, 모집특기별로 지원 가능한 자격/면허, 전공학과 등 정보를 제공하는 서비스입니다.
+군별(육군, 해군, 공군, 해병대), 모집분야별(기술행정병, 일반/전문기술병, 전문특기병 등), 모집특기별로 정보가 구분되어 있습니다.
+병무청 누리집- 군지원(입영신청)안내- 지원서 작성/수정/취소- [지원요건 검색] 메뉴에서 특기별 관련분야로 인정되는 자격면허 및 전공학과 목록을 확인할 수 있고, [지원가능분야 검색] 메뉴에서 본인의 자격면허 또는 전공학과를 입력 후 해당 조건을 기준으로 지원 가능한 특기를 확인할 수 있습니다.
+
+
+요청변수(Request Parameter)
+
+항목명(국문)	항목명(영문)	항목크기	항목구분	샘플데이터	항목설명
+한 페이지 결과 수	numOfRows	4	필수	10	한 페이지 결과 수
+페이지 번호	pageNo	4	필수	1	페이지 번호
+출력결과(Response Element)
+
+항목명(국문)	항목명(영문)	항목크기	항목구분	샘플데이터	항목설명
+결과코드	resultCode	2	필수	00	결과코드
+결과메세지	resultMsg	50	필수	NORMAL SERVICE	결과메세지
+목록	items		옵션	10	한 페이지 결과 수
+군사특기코드	gsteukgiCd	10	필수	S18	군사특기코드
+군사특기명	gsteukgiNm	100	필수	(맞춤)기계	군사특기명
+군명	gtcdNm1	20	필수	공군	군명
+자격면허전공명	gtcdNm2	100	옵션	기계가공기능장	자격면허전공명
+자격면허전공구분	gubun	150	옵션	자격	자격면허전공구분
+자격면허등급	jgmyeonheoDg	50	옵션	기사급이상	자격면허등급
+직간접구분	jjganjeopGbcd	10	옵션	직접	직간접구분
+최초데이터발생일	ccdatabalsaengDtm	14	옵션	20191012120000	최초데이터발생일
+최초데이터변경일	cjdatabyeongyeongDtm	14	옵션	20191012125959	최초데이터변경일
+샘플코드
+Java Javascript C# PHP Curl Objective-C Python Nodejs R
+/* Javascript 샘플 코드 */
+
+
+var xhr = new XMLHttpRequest();
+var url = 'http://apis.data.go.kr/1300000/mjbJiWon/list'; /*URL*/
+var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'서비스키'; /*Service Key*/
+queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /**/
+queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /**/
+xhr.open('GET', url + queryParams);
+xhr.onreadystatechange = function () {
+    if (this.readyState == 4) {
+        alert('Status: '+this.status+'nHeaders: '+JSON.stringify(this.getAllResponseHeaders())+'nBody: '+this.responseText);
+    }
+};
+
+xhr.send('');
+
+
+
+
+병무청_모집병 군지원 접수현황
+ 1.0.0 
+[ Base URL: apis.data.go.kr/1300000/MJBGJWJeopSuHH4 ]
+각 군 모집병 지원서 접수현황을 제공하는 서비스입니다.
+군별(육군, 해군, 공군, 해병대), 모집회차별(입영연월별), 입영부대별(육군훈련소 등), 모집분야별(기술행정병, 일반/전문기술병, 전문특기병 등), 모집특기별로 정보가 구분되어 있습니다.
+접수시작일, 접수종료일, 모집인원(계획인원), 접수인원, 과부족인원, 지원율 정보가 포함되어 있습니다.
+병무청 누리집- 군지원(입영신청)안내- 지원서 작성/수정/취소- 실시간지원현황 메뉴에서 군 선택- 모집구분 선택- 입영연월 선택- 접수목록 선택- 해당회차 선택- 조회하여 모집병 군지원 접수현황을 실시간으로 확인할 수 있습니다.
+
+API 목록
+
+
+GET
+/list
+모집병별 군지원별 접수현황
+당해년도 모집병 군지원 접수현황 정보(군별, 모집구분별 등)를 제공하고자 하는 서비스임(취업맞춤 특기병 제외)
+
+Parameters
+OpenAPI 실행 준비
+Name	Description
+serviceKey *
+string
+(query)
+공공데이터포털에서 받은 인증키
+
+serviceKey
+pageNo *
+string
+(query)
+페이지번호
+
+pageNo
+numOfRows *
+string
+(query)
+한 페이지 결과 수
+
+numOfRows
+Responses
+Code	Description
+200	
+성공
+
+Example Value
+Model
+{
+  "header": {
+    "resultCode": "string",
+    "resultMsg": "string"
+  },
+  "body": {
+    "items": {
+      "item": {
+        "rnum": "string",
+        "gunGbnm": "string",
+        "mojipGbnm": "string",
+        "mojipYy": "string",
+        "mojipTms": "string",
+        "gsteukgiCd": "string",
+        "gsteukgiNm": "string",
+        "iybudaeCdm": "string",
+        "seonbalPcnt": "string",
+        "jeopsuPcnt": "string",
+        "extremes": "string",
+        "rate": "string",
+        "jeopsuSjdtm": "string",
+        "jeopsuJrdtm": "string",
+        "iyyjsijakYm": "string",
+        "iyyjjongryoYm": "string",
+        "ipyeongDe": "string"
+      }
+    },
+    "numOfRows": "string",
+    "pageNo": "string",
+    "totalCount": "string"
+  }
+}
+
+
+
+XML 병무청 맞춤형 특기병 정보
+
+취업맞춤특기병 모집 및 선발과 관련한 자료를 조회하는 서비스입니다.
+군별(육군, 해군, 공군), 모집특기별, 입영부대별(육군훈련소 등), 입영일자별 모집인원과 선발인원 정보를 확인할 수 있습니다.
+병무청 누리집- 군지원(입영신청)안내- 모집안내서비스- 안내 및 지원절차- [취업맞춤특기병] 메뉴에서 모집 개요, 모집 안내, 군사특기임무 및 설명, 지원 절차 등을 확인할 수 있고,
+병무청 누리집- 군지원(입영신청)안내- 지원서 작성/수정/취소- [취업맞춤특기병 지원] 메뉴에서 취업맞춤특기병 지원서를 접수할 수 있습니다.
+
+
+요청변수(Request Parameter)
+
+항목명(국문)	항목명(영문)	항목크기	항목구분	샘플데이터	항목설명
+한 페이지 결과 수	numOfRows	4	1	10	한 페이지 결과 수
+페이지 번호	pageNo	4	1	1	페이지 번호
+출력결과(Response Element)
+
+항목명(국문)	항목명(영문)	항목크기	항목구분	샘플데이터	항목설명
+군구분코드	gunGbcd	1	1	1	군구분코드
+군별명	gtcdNm1	150	1	육군	군별명
+모집년도	mojipYy	4	1	2016	모집년도
+모집회차	mojipTms	3	1	1	모집회차
+군사특기코드	gsteukgiCd	10	1	S121.101	군사특기코드
+군사특기명	gsteukgiNm	100	1	(맞춤)K계열전차조종	군사특기명
+입영부대코드	iybudaeCd	3	1..n	02	입영부대코드
+입영부대명	gtcdNm2	150	1..n	육군훈련소	입영부대명
+입영일자	ipyeongDt	8	1..n	20161226	입영일자
+모집인원수	mojipPcnt	7	0..n	4	모집인원수
+최종선발인원수	cjsbinweon	7	0..n	0	최종선발인원수
+잔여공석, 부족인원	jygs	7	0..n	4	잔여공석
+결과코드	resultCode	2	1	00	결과코드
+결과메세지	resultMsg	50	1	NORMAL SERVICE	결과메세지
+목록	items		0..n		목록
+샘플코드
+Java Javascript C# PHP Curl Objective-C Python Nodejs R
+/* Javascript 샘플 코드 */
+
+
+var xhr = new XMLHttpRequest();
+var url = 'http://apis.data.go.kr/1300000/MachumTG/list'; /*URL*/
+var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'서비스키'; /*Service Key*/
+queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /**/
+queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /**/
+xhr.open('GET', url + queryParams);
+xhr.onreadystatechange = function () {
+    if (this.readyState == 4) {
+        alert('Status: '+this.status+'nHeaders: '+JSON.stringify(this.getAllResponseHeaders())+'nBody: '+this.responseText);
+    }
+};
+
+xhr.send('');
+
+
+
+XML 병무청_사회복무요원 본인선택 공석
+
+사회복무요원 소집업무 규정 제26조(소집일자 및 복무기관 본인선택)에 따라 매년 두 차례에 걸쳐 사회복무요원 복무기관 본인선택 접수를 실시하고 있습니다. *1차는 재학생입영연기자 및 국외입영연기자, 2차는 1차대상자 + 소집대기자
+사회복무요원은 시군구, 소집일자, 복무기관 등을 확인하고 접수하게 되는데, 해당 데이터는 사회복무요원 복무기관 본인선택 시 제공하는 공석현황에 관한 데이터로. 관할지방청, 시군구, 접수회차(1차, 2차), 소집일자, 복무기관명, 부대명, 선복무여부, 집행계획인원, 공석배정인원을 제공합니다.
+
+
+
+요청변수(Request Parameter)
+
+항목명(국문)	항목명(영문)	항목크기	항목구분	샘플데이터	항목설명
+한 페이지 결과 수	numOfRows	4	필수	10	한 페이지 결과 수
+페이지 번호	pageNo	4	필수	1	페이지 번호
+출력결과(Response Element)
+
+항목명(국문)	항목명(영문)	항목크기	항목구분	샘플데이터	항목설명
+결과코드	resultCode	2	필수		결과코드
+결과메세지	resultMsg	50	필수		결과메세지
+한 페이지 결과 수	numOfRows	4	필수	10	한 페이지 결과 수
+페이지 번호	pageNo	4	필수	1	페이지 번호
+전체 결과 수	totalCount	4	필수	3	전체 결과 수
+목록	items		옵션		목록
+법정동시군구주소코드	bjdsggjusoCd	10	옵션	42130	해당기관 주소코드
+법정동시군구주소명	bjdsggjusoNm	200	옵션	강원도 원주시	해당기관 주소명
+복무기관코드	bmgigwanCd	9	필수	40001479	하단복무기관명코드
+복무기관명	bmgigwanNm	100	옵션	국립공원관리공단치악산사무소	국립공원관리공단치악산사무소
+관할지방청코드	ghjbcCd	2	필수	08	08
+관할지방청명	ghjbcNm	150	옵션	강원	강원
+공석배정인원수	gsbaejeongPcnt	7	옵션	1	1
+집행계획인원수	jhgyehoekPcnt	7	옵션	1	1
+순번	rnum	10	필수	21	21
+선발여부	seonbalYn	1	옵션	Y	Y:선발, N:미선발
+사회복무부대코드	shbmbudaeCd	3	필수	1K	1K
+사회복무소집일자	shbmsojipDt	20	필수	27/01/2016	27/01/2016
+접수유형코드	jeopsutypeCd	57	옵션	본인선택	본인선택유형
+접수회차	jeopsuTms	3	옵션	1	년별접수한회차
+샘플코드
+Java Javascript C# PHP Curl Objective-C Python Nodejs R
+/* Javascript 샘플 코드 */
+
+
+var xhr = new XMLHttpRequest();
+var url = 'http://apis.data.go.kr/1300000/bistGongseok/list/bistGongseok/list'; /*URL*/
+var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'서비스키'; /*Service Key*/
+queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /**/
+queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /**/
+xhr.open('GET', url + queryParams);
+xhr.onreadystatechange = function () {
+    if (this.readyState == 4) {
+        alert('Status: '+this.status+'nHeaders: '+JSON.stringify(this.getAllResponseHeaders())+'nBody: '+this.responseText);
+    }
+};
+
+xhr.send('');
+
+
+
+XML 병무청_모집병 군사특기 정보
+
+모집병 지원 시 선택하는 군사특기 관련 정보를 제공하는 서비스입니다.
+군별(육군, 해군, 공군, 해병대), 모집회차별, 모집분야별(기술행정병, 일반/전문기술병, 전문특기병 등), 군사특기별 신체조건(신장체중, 시력, 최저신체등급 등), 면접 실시여부, 연간 모집여부 등을 확인할 수 있습니다.
+군사특기별 지원조건 및 신체조건 관련 자세한 사항은 병무청 누리집- 군지원(입영신청)안내- 모집안내서비스- 안내 및 지원절차- 군/모집분야 선택- [모집안내], [군사특기 임무 및 설명] 메뉴 및 모집 공지 등에서 확인할 수 있습니다.
+
+
+요청변수(Request Parameter)
+
+항목명(국문)	항목명(영문)	항목크기	항목구분	샘플데이터	항목설명
+한 페이지 결과 수	numOfRows	4	필수	10	한 페이지 결과 수
+페이지 번호	pageNo	4	필수	1	페이지 번호
+출력결과(Response Element)
+
+항목명(국문)	항목명(영문)	항목크기	항목구분	샘플데이터	항목설명
+최고기준값	cggijunVl	10	옵션	195	최고기준값
+최저기준값	cjgijunVl	10	옵션	1.0	최저기준값
+기준항목명	gjhangmokNm	100	필수	전문화관리병여부	기준항목병
+군사특기코드	gsteukgiCd	10	필수	171.101	군사특기코드
+군사특기명	gsteukgiNm	100	옵션	야전통신운용/정비	군사특기병
+군구분코드	gunGbcd	1	필수	1	군구분코드
+군구분명	gunGbnm	150	옵션	육군	군구분명
+입영예정종료년월	iyyjjongryoYm	6	옵션	201605	입영예정종료년월
+입영예정시작년월	iyyjsijakYm	6	옵션	201605	입영예정시작년월
+접수종료일시	jeopsuJrdtm	20	옵션	3/2/16 14:00	접수종료일시
+접수시작일시	jeopsuSjdtm	20	옵션	2/25/16 14:00	접수시작일시
+모병특기번호	mbteukgiNo	5	필수	10442	모병특기번호
+모집병과특기코드	mjbgteukgiCd	2	옵션	17	모병병과특기코드
+모집병과특기명	mjbgteukgiNm	150	옵션	통신	모집병과특기명
+모집일정번호	mjiljeongNo	5	필수	21473	모집일정번호
+모집회차	mojipTms	3	필수	3	모집회차
+모집년도	mojipYy	4	필수	2016	모집년도
+Row number	rnum		옵션	1	Row number
+결과코드	resultCode	2	필수	10	결과코드
+결과메세지	resultMsg	50	필수	10	결과메세지
+한 페이지 결과 수	numOfRows	4	필수	10	한 페이지 결과 수
+페이지 번호	pageNo	4	필수	1	페이지 번호
+전체 결과 수	totalCount	4	필수	3	전체 결과 수
+목록	items		옵션	10	목록
+샘플코드
+Java Javascript C# PHP Curl Objective-C Python Nodejs R
+/* Javascript 샘플 코드 */
+
+
+var xhr = new XMLHttpRequest();
+var url = 'http://apis.data.go.kr/1300000/gsTgMastr/list/gsTgMastr/list'; /*URL*/
+var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'서비스키'; /*Service Key*/
+queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /**/
+queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /**/
+xhr.open('GET', url + queryParams);
+xhr.onreadystatechange = function () {
+    if (this.readyState == 4) {
+        alert('Status: '+this.status+'nHeaders: '+JSON.stringify(this.getAllResponseHeaders())+'nBody: '+this.responseText);
+    }
+};
+
+xhr.send('');
+
+
