@@ -2,6 +2,7 @@ import { Router } from "express";
 import type { RecommendationInput } from "@military-guide/shared";
 import { MmaClient } from "../mma/mma.client";
 import { searchSpecialties } from "../specialties/specialty-search";
+import { expandCertificateKeywords } from "./certificate-profile";
 import { scoreRecommendations } from "./recommendation.service";
 
 const mmaClient = new MmaClient();
@@ -29,6 +30,7 @@ function normalizeInput(body: unknown): RecommendationInput {
     desiredBranch: readString(source.desiredBranch),
     major: readString(source.major),
     certificates: readStringArray(source.certificates),
+    supportFlags: readStringArray(source.supportFlags),
     physicalGrade: readNumber(source.physicalGrade),
     interests: readStringArray(source.interests),
     desiredEnlistDate: readString(source.desiredEnlistDate),
@@ -37,16 +39,18 @@ function normalizeInput(body: unknown): RecommendationInput {
 }
 
 async function findRecommendationCandidates(input: RecommendationInput) {
-  const keywords = [...input.interests, input.major, ...input.certificates].filter(
+  const certificateKeywords = expandCertificateKeywords(input.certificates);
+  const keywords = [
+    ...input.interests,
+    input.major,
+    ...certificateKeywords,
+    ...input.certificates
+  ].filter(
     (keyword): keyword is string => Boolean(keyword)
   );
 
   for (const keyword of keywords) {
-    const candidates = await searchSpecialties(mmaClient, {
-      query: keyword,
-      maxPages: 12,
-      limit: 120
-    });
+    const candidates = await trySearchSpecialties(keyword);
 
     if (candidates.length) {
       return candidates;
@@ -57,6 +61,18 @@ async function findRecommendationCandidates(input: RecommendationInput) {
     maxPages: 3,
     limit: 120
   });
+}
+
+async function trySearchSpecialties(keyword: string) {
+  try {
+    return await searchSpecialties(mmaClient, {
+      query: keyword,
+      maxPages: 12,
+      limit: 120
+    });
+  } catch {
+    return [];
+  }
 }
 
 function readString(value: unknown): string | undefined {

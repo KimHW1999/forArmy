@@ -285,6 +285,135 @@ h4 {
   grid-column: span 2;
 }
 
+.certificate-field {
+  display: grid;
+  gap: 8px;
+}
+
+.certificate-field > span {
+  color: #40515f;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.certificate-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.certificate-entry button {
+  height: 42px;
+  border: 0;
+  border-radius: 8px;
+  background: #2f6f73;
+  color: #ffffff;
+  padding: 0 14px;
+  font-weight: 700;
+}
+
+.certificate-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.certificate-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.certificate-suggestions button {
+  min-height: 30px;
+  border: 1px solid #dce8ea;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #40515f;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.certificate-suggestions button:hover {
+  border-color: #2f6f73;
+  background: #edf7f5;
+  color: #24676a;
+}
+
+.certificate-chips > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  border: 1px solid #d6e4e4;
+  border-radius: 999px;
+  background: #edf7f5;
+  color: #24676a;
+  padding: 0 6px 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.certificate-chips button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #24676a;
+  padding: 0;
+}
+
+.certificate-chips svg {
+  width: 14px;
+  height: 14px;
+}
+
+.certificate-field small {
+  color: #61717c;
+  font-size: 12px;
+}
+
+.support-field {
+  display: grid;
+  gap: 8px;
+}
+
+.support-field > span {
+  color: #40515f;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.support-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.support-checkboxes label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  border: 1px solid #dce8ea;
+  border-radius: 8px;
+  background: #fbfdfd;
+  color: #40515f;
+  padding: 0 10px;
+  font-size: 13px;
+}
+
+.support-checkboxes input {
+  width: 16px;
+  height: 16px;
+  accent-color: #2f6f73;
+}
+
 .condition-actions {
   display: flex;
   gap: 14px;
@@ -779,6 +908,28 @@ h4 {
 .review-input:focus {
   border-color: #2f6f73;
   box-shadow: 0 0 0 3px rgb(47 111 115 / 0.12);
+}
+
+.review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.review-actions button {
+  height: 38px;
+  border: 0;
+  border-radius: 8px;
+  background: #2f6f73;
+  color: #ffffff;
+  padding: 0 14px;
+  font-weight: 700;
+}
+
+.review-actions span {
+  color: #61717c;
+  font-size: 13px;
 }
 
 .document-list li,

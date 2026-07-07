@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import cors from "cors";
 import express from "express";
 import { env } from "./config/env";
+import { eligibilityRouter } from "./modules/eligibility/eligibility.routes";
 import { mmaRouter } from "./modules/mma/mma.routes";
 import { recommendationRouter } from "./modules/recommendations/recommendation.routes";
 import { recruitmentRouter } from "./modules/recruitment/recruitment.routes";
@@ -21,6 +22,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/mma", mmaRouter);
+app.use("/api/eligibility", eligibilityRouter);
 app.use("/api/specialties", specialtyRouter);
 app.use("/api/recruitment", recruitmentRouter);
 app.use("/api/recommendations", recommendationRouter);

@@ -15,7 +15,8 @@ import {
   Loader2,
   NotebookPen,
   Search,
-  SlidersHorizontal
+  SlidersHorizontal,
+  X
 } from "lucide-react";
 import {
   fetchSpecialtyExplanation,
@@ -27,7 +28,9 @@ import {
 type UserConditionInput = {
   desiredBranch: string;
   major: string;
-  certificatesText: string;
+  certificateDraft: string;
+  certificates: string[];
+  supportFlags: string[];
   physicalGrade: string;
   interestsText: string;
   desiredEnlistDate: string;
@@ -46,6 +49,59 @@ type SpecialtyReview = {
   rating: number;
   review: string;
 };
+
+const SUPPORT_FLAG_OPTIONS = [
+  { value: "certificate", label: "자격증/면허증 보유" },
+  { value: "independenceMerit", label: "독립유공자 관련" },
+  { value: "nationalMerit", label: "국가유공자 관련" },
+  { value: "multiChild", label: "다자녀 가정" },
+  { value: "bloodDonation", label: "헌혈" },
+  { value: "volunteer", label: "봉사활동" },
+  { value: "career", label: "관련 경력" }
+] as const;
+
+const CERTIFICATE_SUGGESTIONS = [
+  "한식조리기능사",
+  "양식조리기능사",
+  "중식조리기능사",
+  "일식조리기능사",
+  "제과기능사",
+  "제빵기능사",
+  "정보처리기사",
+  "정보처리산업기사",
+  "정보처리기능사",
+  "정보보안기사",
+  "정보보안산업기사",
+  "전기기사",
+  "전기산업기사",
+  "전기기능사",
+  "전자기사",
+  "전자산업기사",
+  "전자기기기능사",
+  "무선설비기사",
+  "무선설비산업기사",
+  "통신선로기능사",
+  "네트워크관리사",
+  "컴퓨터활용능력",
+  "워드프로세서",
+  "자동차정비기사",
+  "자동차정비산업기사",
+  "자동차정비기능사",
+  "위험물산업기사",
+  "위험물기능사",
+  "가스기사",
+  "가스산업기사",
+  "가스기능사",
+  "지게차운전기능사",
+  "굴착기운전기능사",
+  "건설기계정비기능사",
+  "용접기사",
+  "용접산업기사",
+  "용접기능사",
+  "1종보통 운전면허",
+  "1종대형 운전면허",
+  "특수 운전면허"
+];
 
 export function App() {
   const [specialties, setSpecialties] = useState<MilitarySpecialty[]>([]);
@@ -247,9 +303,12 @@ function MyPagePanel({
   const conditionSummary = [
     conditionInput.desiredBranch || "군 전체",
     conditionInput.major || "전공 미입력",
-    conditionInput.certificatesText
-      ? `자격증 ${splitList(conditionInput.certificatesText).length}개`
+    conditionInput.certificates.length
+      ? `자격증 ${conditionInput.certificates.length}개`
       : "자격증 미입력",
+    conditionInput.supportFlags.length
+      ? `해당자 ${conditionInput.supportFlags.length}개`
+      : "해당자 체크 없음",
     conditionInput.interestsText
       ? `관심 ${splitList(conditionInput.interestsText).length}개`
       : "관심분야 미입력"
@@ -344,6 +403,7 @@ function ConditionPanel({
   onSubmit: (input: RecommendationInput) => void;
 }) {
   const payload = toRecommendationInput(input);
+  const certificateSuggestions = findCertificateSuggestions(input);
 
   return (
     <section className="condition-panel" aria-label="사용자 조건 입력">
@@ -421,14 +481,58 @@ function ConditionPanel({
           </select>
         </label>
 
-        <label className="wide-field">
-          보유 자격증
-          <input
-            value={input.certificatesText}
-            onChange={(event) => onChange({ ...input, certificatesText: event.target.value })}
-            placeholder="예: 정보처리기능사, 운전면허"
-          />
-        </label>
+        <div className="certificate-field wide-field">
+          <span>보유 자격증</span>
+          <div className="certificate-entry">
+            <input
+              value={input.certificateDraft}
+              onChange={(event) =>
+                onChange({ ...input, certificateDraft: event.target.value })
+              }
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  onChange(addCertificate(input));
+                }
+              }}
+              placeholder="예: 정보처리기능사"
+            />
+            <button type="button" onClick={() => onChange(addCertificate(input))}>
+              추가
+            </button>
+          </div>
+          {certificateSuggestions.length ? (
+            <div className="certificate-suggestions" aria-label="자격증 자동완성">
+              {certificateSuggestions.map((certificate) => (
+                <button
+                  key={certificate}
+                  type="button"
+                  onClick={() => onChange(addCertificate(input, certificate))}
+                >
+                  {certificate}
+                </button>
+              ))}
+            </div>
+          ) : null}
+          {input.certificates.length ? (
+            <div className="certificate-chips" aria-label="저장된 자격증">
+              {input.certificates.map((certificate) => (
+                <span key={certificate}>
+                  {certificate}
+                  <button
+                    aria-label={`${certificate} 삭제`}
+                    onClick={() => onChange(removeCertificate(input, certificate))}
+                    type="button"
+                  >
+                    <X aria-hidden="true" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          ) : (
+            <small>자격증을 하나씩 추가해두면 조건에 따로 저장됩니다.</small>
+          )}
+        </div>
 
         <label className="wide-field">
           관심 분야
@@ -438,6 +542,22 @@ function ConditionPanel({
             placeholder="예: 신호정보, 통신, 조리"
           />
         </label>
+
+        <div className="support-field wide-field">
+          <span>해당자/증빙 체크</span>
+          <div className="support-checkboxes">
+            {SUPPORT_FLAG_OPTIONS.map((option) => (
+              <label key={option.value}>
+                <input
+                  checked={input.supportFlags.includes(option.value)}
+                  onChange={() => onChange(toggleSupportFlag(input, option.value))}
+                  type="checkbox"
+                />
+                <span>{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="condition-actions">
@@ -447,7 +567,7 @@ function ConditionPanel({
         <div>
           <strong>{submittedInput ? "조건 저장됨" : "입력 중"}</strong>
           <span>
-            자격증 {payload.certificates.length}개 · 관심 분야 {payload.interests.length}개
+            자격증 {payload.certificates.length}개 · 해당자 {payload.supportFlags.length}개 · 관심 분야 {payload.interests.length}개
           </span>
         </div>
       </div>
@@ -650,14 +770,21 @@ function SpecialtyExplanation({ specialty }: { specialty: MilitarySpecialty }) {
 function SpecialtyReviewForm({ specialty }: { specialty: MilitarySpecialty }) {
   const storageKey = getSpecialtyReviewStorageKey(specialty);
   const [review, setReview] = useState<SpecialtyReview>({ rating: 0, review: "" });
+  const [savedMessage, setSavedMessage] = useState("");
 
   useEffect(() => {
     setReview(readSpecialtyReview(storageKey));
+    setSavedMessage("");
   }, [storageKey]);
 
   function handleReviewChange(next: SpecialtyReview) {
     setReview(next);
-    writeJson(storageKey, next);
+    setSavedMessage("");
+  }
+
+  function handleReviewSave() {
+    writeJson(storageKey, review);
+    setSavedMessage("한 줄 평이 저장됐습니다.");
   }
 
   return (
@@ -688,6 +815,12 @@ function SpecialtyReviewForm({ specialty }: { specialty: MilitarySpecialty }) {
         placeholder="예: 자격증 맞으면 지원해볼 만함"
         value={review.review}
       />
+      <div className="review-actions">
+        <button type="button" onClick={handleReviewSave}>
+          한 줄 평 등록
+        </button>
+        <span>{savedMessage || "등록하면 이 브라우저에 저장됩니다."}</span>
+      </div>
     </div>
   );
 }
@@ -861,11 +994,68 @@ function toRecommendationInput(input: UserConditionInput): RecommendationInput {
   return {
     desiredBranch: input.desiredBranch || undefined,
     major: input.major || undefined,
-    certificates: splitList(input.certificatesText),
+    certificates: input.certificates,
+    supportFlags: input.supportFlags,
     physicalGrade: input.physicalGrade ? Number(input.physicalGrade) : undefined,
     interests: splitList(input.interestsText),
     desiredEnlistDate: input.desiredEnlistDate || undefined,
     serviceType: input.serviceType
+  };
+}
+
+function toggleSupportFlag(
+  input: UserConditionInput,
+  flag: (typeof SUPPORT_FLAG_OPTIONS)[number]["value"]
+): UserConditionInput {
+  const exists = input.supportFlags.includes(flag);
+
+  return {
+    ...input,
+    supportFlags: exists
+      ? input.supportFlags.filter((item) => item !== flag)
+      : [...input.supportFlags, flag]
+  };
+}
+
+function addCertificate(input: UserConditionInput, selectedCertificate?: string): UserConditionInput {
+  const certificate = (selectedCertificate ?? input.certificateDraft).trim();
+
+  if (!certificate || input.certificates.includes(certificate)) {
+    return {
+      ...input,
+      certificateDraft: ""
+    };
+  }
+
+  return {
+    ...input,
+    certificateDraft: "",
+    certificates: [...input.certificates, certificate]
+  };
+}
+
+function findCertificateSuggestions(input: UserConditionInput): string[] {
+  const query = normalizeText(input.certificateDraft);
+  const selected = new Set(input.certificates.map(normalizeText));
+
+  return CERTIFICATE_SUGGESTIONS.filter((certificate) => {
+    const normalizedCertificate = normalizeText(certificate);
+
+    if (selected.has(normalizedCertificate)) {
+      return false;
+    }
+
+    return !query || normalizedCertificate.includes(query);
+  }).slice(0, 8);
+}
+
+function removeCertificate(
+  input: UserConditionInput,
+  certificate: string
+): UserConditionInput {
+  return {
+    ...input,
+    certificates: input.certificates.filter((item) => item !== certificate)
   };
 }
 
@@ -962,17 +1152,40 @@ function readDocumentChecklist(storageKey: string): Record<string, boolean> {
 }
 
 function readSavedConditionInput(): UserConditionInput {
-  return (
-    readJson<UserConditionInput>("military-guide:condition-input") ?? {
-      desiredBranch: "",
-      major: "",
-      certificatesText: "",
-      physicalGrade: "",
-      interestsText: "",
-      desiredEnlistDate: "",
-      serviceType: "any"
-    }
-  );
+  const savedInput =
+    readJson<
+      Partial<UserConditionInput> & {
+        certificatesText?: string;
+      }
+    >("military-guide:condition-input");
+
+  return {
+    desiredBranch: savedInput?.desiredBranch ?? "",
+    major: savedInput?.major ?? "",
+    certificateDraft: savedInput?.certificateDraft ?? "",
+    certificates: readSavedCertificates(savedInput),
+    supportFlags: Array.isArray(savedInput?.supportFlags) ? savedInput.supportFlags : [],
+    physicalGrade: savedInput?.physicalGrade ?? "",
+    interestsText: savedInput?.interestsText ?? "",
+    desiredEnlistDate: savedInput?.desiredEnlistDate ?? "",
+    serviceType: savedInput?.serviceType ?? "any"
+  };
+}
+
+function normalizeText(value: string) {
+  return value.trim().toLowerCase().replace(/\s+/g, "");
+}
+
+function readSavedCertificates(
+  savedInput?: (Partial<UserConditionInput> & { certificatesText?: string }) | null
+): string[] {
+  if (Array.isArray(savedInput?.certificates)) {
+    return savedInput.certificates.filter(
+      (certificate): certificate is string => typeof certificate === "string" && Boolean(certificate.trim())
+    );
+  }
+
+  return splitList(savedInput?.certificatesText ?? "");
 }
 
 function readSavedSpecialties(): SavedSpecialty[] {

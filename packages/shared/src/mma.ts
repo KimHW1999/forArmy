@@ -70,6 +70,18 @@ export type SelectionScoreRule = {
   recruitRound: string;
 };
 
+export type EligibilityInfo = {
+  specialtyCode: string;
+  specialtyName?: string;
+  branchName?: string;
+  requirementName?: string;
+  requirementType?: string;
+  licenseGrade?: string;
+  relationType?: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export type RecruitmentStatus = {
   specialtyCode: string;
   specialtyName?: string;
@@ -99,6 +111,7 @@ export type RecommendationInput = {
   desiredBranch?: string;
   major?: string;
   certificates: string[];
+  supportFlags: string[];
   physicalGrade?: number;
   interests: string[];
   desiredEnlistDate?: string;

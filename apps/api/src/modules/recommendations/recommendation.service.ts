@@ -3,6 +3,10 @@ import type {
   RecommendationInput,
   RecommendationResult
 } from "@military-guide/shared";
+import {
+  certificateMatchesCandidateText,
+  certificateMatchReasons
+} from "./certificate-profile";
 
 export function scoreRecommendations(
   input: RecommendationInput,
@@ -43,11 +47,23 @@ function scoreCandidate(
     missingConditions.push("전공 일치 근거 부족");
   }
 
-  if (matchesAny(candidate, input.certificates)) {
+  const candidateText = getCandidateText(candidate);
+  const certificateReasons = certificateMatchReasons(input.certificates, candidateText);
+
+  if (matchesAny(candidate, input.certificates) || certificateMatchesCandidateText(input.certificates, candidateText)) {
     score += 20;
-    reasons.push("자격/면허 키워드 일치");
+    reasons.push(
+      certificateReasons.length
+        ? `자격/면허 추정 일치: ${certificateReasons.join(", ")}`
+        : "자격/면허 키워드 일치"
+    );
   } else if (input.certificates.length) {
     missingConditions.push("자격/면허 일치 근거 부족");
+  }
+
+  if (input.supportFlags.length) {
+    score += Math.min(input.supportFlags.length * 3, 12);
+    reasons.push(`해당자 증빙 ${input.supportFlags.length}개 체크`);
   }
 
   if (input.physicalGrade && input.physicalGrade <= 3) {
@@ -80,7 +96,11 @@ function matchesAny(candidate: MilitarySpecialty, keywords: string[]): boolean {
 }
 
 function matchesText(candidate: MilitarySpecialty, keyword: string): boolean {
-  const target = [
+  return getCandidateText(candidate).includes(keyword.trim().toLowerCase());
+}
+
+function getCandidateText(candidate: MilitarySpecialty): string {
+  return [
     candidate.specialtyCode,
     candidate.specialtyName,
     candidate.branchName,
@@ -90,6 +110,4 @@ function matchesText(candidate: MilitarySpecialty, keyword: string): boolean {
     .filter(Boolean)
     .join(" ")
     .toLowerCase();
-
-  return target.includes(keyword.trim().toLowerCase());
 }
